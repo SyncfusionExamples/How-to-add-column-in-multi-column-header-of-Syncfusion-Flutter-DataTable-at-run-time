@@ -1,7 +1,8 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,8 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Syncfusion DataGrid Demo',
-      theme: ThemeData(
-          primarySwatch: Colors.blue, visualDensity: VisualDensity.standard),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: MyHomePage(),
     );
   }
@@ -23,34 +23,20 @@ class MyApp extends StatelessWidget {
 /// The home page of the application which hosts the datagrid.
 class MyHomePage extends StatefulWidget {
   /// Creates the home page.
-  MyHomePage({Key key}) : super(key: key);
+  MyHomePage({Key? key}) : super(key: key);
 
   @override
   _StackedHeaderDataGridState createState() => _StackedHeaderDataGridState();
 }
 
 class _StackedHeaderDataGridState extends State<MyHomePage> {
-  _StackedHeaderDataGridSource _stackedHeaderDataGridSource;
+  late _StackedHeaderDataGridSource stackedHeaderDataGridSource;
 
-  StackedHeaderRow orderRow;
+  final Random random = Random();
 
-  List<Product> _productData = [];
-  final Random _random = Random();
+  List<Product> productData = [];
 
-  StackedHeaderRow stackedHeaderRow = StackedHeaderRow(cells: [
-    StackedHeaderCell(
-        columnNames: ['customerName', 'city'],
-        child: Container(
-            color: const Color(0xFFF1F1F1),
-            child: Center(child: Text('Customer Details')))),
-    StackedHeaderCell(
-        columnNames: ['productId', 'product'],
-        child: Container(
-            color: const Color(0xFFF1F1F1),
-            child: Center(child: Text('Product Details'))))
-  ]);
-
-  final List<String> _product = <String>[
+  final List<String> product = <String>[
     'Lax',
     'Chocolate',
     'Syrup',
@@ -82,7 +68,7 @@ class _StackedHeaderDataGridState extends State<MyHomePage> {
     'Gum',
   ];
 
-  final List<String> _cities = <String>[
+  final List<String> cities = <String>[
     'Bruxelles',
     'Rosario',
     'Recife',
@@ -93,7 +79,7 @@ class _StackedHeaderDataGridState extends State<MyHomePage> {
     'Resende',
   ];
 
-  final List<int> _productId = <int>[
+  final List<int> productId = <int>[
     3524,
     2523,
     1345,
@@ -125,7 +111,7 @@ class _StackedHeaderDataGridState extends State<MyHomePage> {
     4932,
   ];
 
-  final List<DateTime> _orderDate = <DateTime>[
+  final List<DateTime> orderDate = <DateTime>[
     DateTime.now(),
     DateTime(2002, 8, 27),
     DateTime(2015, 7, 4),
@@ -141,7 +127,7 @@ class _StackedHeaderDataGridState extends State<MyHomePage> {
     DateTime(2013, 10, 22),
   ];
 
-  List<String> _names = [
+  List<String> names = [
     'Kyle',
     'Gina',
     'Irene',
@@ -169,87 +155,134 @@ class _StackedHeaderDataGridState extends State<MyHomePage> {
     'Zeke'
   ];
 
+  StackedHeaderRow? orderRow;
+
   List<Product> _generateProductData(int count) {
     final List<Product> productData = <Product>[];
     for (int i = 0; i < count; i++) {
       productData.add(
         Product(
             i + 1000,
-            _productId[i < _productId.length
+            productId[i < productId.length
                 ? i
-                : _random.nextInt(_productId.length - 1)],
-            _product[
-                i < _product.length ? i : _random.nextInt(_product.length - 1)],
-            _random.nextInt(count),
-            70.0 + _random.nextInt(100),
-            _cities[
-                i < _cities.length ? i : _random.nextInt(_cities.length - 1)],
-            1700 + _random.nextInt(100),
-            _orderDate[_random.nextInt(_orderDate.length - 1)],
-            _names[i < _names.length ? i : _random.nextInt(_names.length - 1)]),
+                : random.nextInt(productId.length - 1)],
+            product[
+                i < product.length ? i : random.nextInt(product.length - 1)],
+            random.nextInt(count),
+            70.0 + random.nextInt(100),
+            cities[i < cities.length ? i : random.nextInt(cities.length - 1)],
+            1700 + random.nextInt(100),
+            orderDate[random.nextInt(orderDate.length - 1)],
+            names[i < names.length ? i : random.nextInt(names.length - 1)]),
       );
     }
-
     return productData;
   }
+
+  Color _getHeaderCellBackgroundColor() {
+    return const Color(0xFFF1F1F1);
+  }
+
+  StackedHeaderRow stackedHeaderRow = StackedHeaderRow(cells: [
+    StackedHeaderCell(
+        columnNames: ['customerName', 'city'],
+        child: Container(
+            color: const Color(0xFFF1F1F1),
+            child: Center(child: Text('Customer Details')))),
+    StackedHeaderCell(
+        columnNames: ['productId', 'product'],
+        child: Container(
+            color: const Color(0xFFF1F1F1),
+            child: Center(child: Text('Product Details'))))
+  ]);
 
   List<StackedHeaderRow> _getStackedHeaderRows() {
     final List<StackedHeaderRow> stackedHeaderCollection = [];
     stackedHeaderCollection.add(stackedHeaderRow);
     if (orderRow != null) {
-      stackedHeaderCollection.insert(0, orderRow);
+      stackedHeaderCollection.insert(0, orderRow!);
     }
     return stackedHeaderCollection;
-  }
-
-  Color _getHeaderCellBackgroundColor() {
-    return const Color(0xFFF1F1F1);
-    // : const Color(0xFF3A3A3A);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _productData = _generateProductData(15);
-    _stackedHeaderDataGridSource = _StackedHeaderDataGridSource(_productData);
   }
 
   SfDataGridTheme _buildDataGrid() {
     return SfDataGridTheme(
         data: SfDataGridThemeData(
-            headerStyle: DataGridHeaderCellStyle(
-                backgroundColor: _getHeaderCellBackgroundColor())),
+          headerColor: _getHeaderCellBackgroundColor(),
+        ),
         child: SfDataGrid(
-            gridLinesVisibility: GridLinesVisibility.vertical,
-            headerGridLinesVisibility: GridLinesVisibility.both,
-            source: _stackedHeaderDataGridSource,
-            columnWidthMode: ColumnWidthMode.lastColumnFill,
-            columns: [
-              GridTextColumn(
-                  mappingName: 'customerName',
-                  columnWidthMode: ColumnWidthMode.header,
-                  headerText: 'Customer Name'),
-              GridTextColumn(
-                  mappingName: 'city', width: 100, headerText: 'City'),
-              GridTextColumn(
-                  mappingName: 'product', width: 100, headerText: 'Product'),
-              GridNumericColumn(
-                  mappingName: 'productId',
-                  width: 110,
-                  headerText: 'Product ID'),
-            ],
-            stackedHeaderRows: _getStackedHeaderRows()));
+          gridLinesVisibility: GridLinesVisibility.vertical,
+          headerGridLinesVisibility: GridLinesVisibility.both,
+          source: stackedHeaderDataGridSource,
+          columns: [
+            GridTextColumn(
+                columnName: 'customerName',
+                width: 140,
+                label: Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Customer Name',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  color: _getHeaderCellBackgroundColor(),
+                )),
+            GridTextColumn(
+                columnName: 'city',
+                width: 100,
+                label: Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'City',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  color: _getHeaderCellBackgroundColor(),
+                )),
+            GridTextColumn(
+                columnName: 'product',
+                width: 100,
+                label: Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Product',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  color: _getHeaderCellBackgroundColor(),
+                )),
+            GridTextColumn(
+                columnName: 'productId',
+                width: 100,
+                label: Container(
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Product ID',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  color: _getHeaderCellBackgroundColor(),
+                )),
+          ],
+          stackedHeaderRows: _getStackedHeaderRows(),
+        ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    productData = _generateProductData(30);
+    stackedHeaderDataGridSource =
+        _StackedHeaderDataGridSource(productData: productData);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Syncfusion DataGrid Demo'),
-      ),
+      appBar: AppBar(title: Text('Stacked Header Demo')),
       body: Column(
         children: [
-          FlatButton(
+          MaterialButton(
               color: Colors.blue[200],
               onPressed: () {
                 orderRow = StackedHeaderRow(cells: [
@@ -296,48 +329,57 @@ class Product {
   final String customerName;
 }
 
-class _StackedHeaderDataGridSource extends DataGridSource<Product> {
-  _StackedHeaderDataGridSource(List<Product> productData) {
-    _productData = productData;
+class _StackedHeaderDataGridSource extends DataGridSource {
+  _StackedHeaderDataGridSource({required List<Product> productData}) {
+    _productData = productData.map<DataGridRow>((e) {
+      return DataGridRow(cells: [
+        DataGridCell(columnName: 'customerName', value: e.customerName),
+        DataGridCell(columnName: 'city', value: e.city),
+        DataGridCell(columnName: 'product', value: e.product),
+        DataGridCell(columnName: 'productId', value: e.productId),
+      ]);
+    }).toList(growable: false);
   }
-
-  List<Product> _productData;
+  late List<DataGridRow> _productData;
 
   @override
-  List<Product> get dataSource => _productData;
+  List<DataGridRow> get rows => _productData;
+
   @override
-  Object getValue(Product product, String columnName) {
-    switch (columnName) {
-      case 'orderId':
-        return product.orderId;
-        break;
-      case 'product':
-        return product.product;
-        break;
-      case 'productId':
-        return product.productId;
-        break;
-      case 'unitPrice':
-        return product.unitPrice;
-        break;
-      case 'quantity':
-        return product.quantity;
-        break;
-      case 'city':
-        return product.city;
-        break;
-      case 'customerId':
-        return product.customerId;
-        break;
-      case 'orderDate':
-        return product.orderDate;
-        break;
-      case 'customerName':
-        return product.customerName;
-        break;
-      default:
-        return 'empty';
-        break;
-    }
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(cells: [
+      Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[0].value,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[1].value,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[2].value,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[3].value.toString(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    ]);
   }
 }
