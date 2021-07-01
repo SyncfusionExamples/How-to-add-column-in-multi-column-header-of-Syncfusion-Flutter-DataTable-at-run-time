@@ -215,7 +215,7 @@ class _StackedHeaderDataGridState extends State<MyHomePage> {
           headerGridLinesVisibility: GridLinesVisibility.both,
           source: stackedHeaderDataGridSource,
           columns: [
-            GridTextColumn(
+            GridColumn(
                 columnName: 'customerName',
                 width: 140,
                 label: Container(
@@ -227,7 +227,7 @@ class _StackedHeaderDataGridState extends State<MyHomePage> {
                   ),
                   color: _getHeaderCellBackgroundColor(),
                 )),
-            GridTextColumn(
+            GridColumn(
                 columnName: 'city',
                 width: 100,
                 label: Container(
@@ -239,7 +239,7 @@ class _StackedHeaderDataGridState extends State<MyHomePage> {
                   ),
                   color: _getHeaderCellBackgroundColor(),
                 )),
-            GridTextColumn(
+            GridColumn(
                 columnName: 'product',
                 width: 100,
                 label: Container(
@@ -251,7 +251,7 @@ class _StackedHeaderDataGridState extends State<MyHomePage> {
                   ),
                   color: _getHeaderCellBackgroundColor(),
                 )),
-            GridTextColumn(
+            GridColumn(
                 columnName: 'productId',
                 width: 100,
                 label: Container(
